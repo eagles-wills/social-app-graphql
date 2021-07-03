@@ -1,0 +1,22 @@
+{
+	"dependencies": {
+		"apollo-server": "^2.25.2",
+		"bcryptjs": "^2.4.3",
+		"colors": "^1.4.0",
+		"config": "^3.3.6",
+		"graphql": "^15.5.1",
+		"jsonwebtoken": "^8.5.1",
+		"moment": "^2.29.1",
+		"mongoose": "^5.13.0"
+	},
+	"name": "server",
+	"version": "1.0.0",
+	"description": "just a simple post app",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon  index.js"
+	},
+	"author": "eagles 007",
+	"license": "MIT"
+}
