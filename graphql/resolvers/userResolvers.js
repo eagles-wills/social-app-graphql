@@ -18,7 +18,45 @@ const generateToken = (user) => {
 	);
 };
 const userResolvers = {
-	Query: {
+	Mutation: {
+		registerUser: async (
+			_,
+			{ username, email, password, confirmPassword },
+		) => {
+			// validate user
+			const { errors, valid } = validateRegisterUser(
+				username,
+				email,
+				password,
+				confirmPassword,
+			);
+			if (!valid) throw new UserInputError("Errors", { errors });
+			// check if the user exists
+			try {
+				const userData = await Users.findOne({ username });
+				if (userData)
+					throw new UserInputError("Username is taken", {
+						errors: { username: "username is taken" },
+					});
+
+				const newUser = new Users({
+					username,
+					email,
+					password,
+					createdAt: moment(new Date().toISOString()).toDate(),
+				});
+				const user = await newUser.save();
+				const token = generateToken(user);
+				return {
+					...user._doc,
+					id: user._id,
+					token,
+				};
+			} catch (error) {
+				console.log(error.message);
+				throw new UserInputError("Error", { error });
+			}
+		},
 		loginUser: async (_, { username, password }) => {
 			const { errors, valid } = validateLoginUser(username, password);
 			if (!valid) throw new UserInputError("Errors", { errors });
@@ -42,47 +80,6 @@ const userResolvers = {
 				};
 			} catch (error) {
 				console.log(error);
-			}
-		},
-	},
-	Mutation: {
-		registerUser: async (
-			_,
-			{ username, email, password, confirmPassword },
-		) => {
-			// validate user
-			const { errors, valid } = validateRegisterUser(
-				username,
-				email,
-				password,
-				confirmPassword,
-			);
-			if (!valid) throw new UserInputError("Errors", { errors });
-			// check if the user exists
-
-			try {
-				const userData = await Users.findOne({ username });
-				if (userData) {
-					throw new UserInputError("Username", {
-						errors: { Username: "Username already exists" },
-					});
-				}
-				const newUser = new Users({
-					username,
-					email,
-					password: await bcrypt.hash(password, 15),
-					confirmPassword,
-					createdAt: moment(new Date().toISOString()).toDate(),
-				});
-				const user = await newUser.save();
-				const token = generateToken(user);
-				return {
-					...user._doc,
-					id: user._id,
-					token,
-				};
-			} catch (error) {
-				console.log(error.message);
 			}
 		},
 	},

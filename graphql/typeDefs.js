@@ -31,7 +31,6 @@ const typeDefs = gql`
 		createdAt: String!
 	}
 	type Query {
-		loginUser(username: String!, password: String!): User!
 		fetchAllPosts: [Post!]
 	}
 
@@ -42,6 +41,7 @@ const typeDefs = gql`
 			password: String!
 			confirmPassword: String!
 		): User!
+		loginUser(username: String!, password: String!): User!
 		createPost(body: String): Post!
 		deletePost(postId: ID!): String!
 		likePost(postId: ID!): Post!
