@@ -58,20 +58,24 @@ const userResolvers = {
 			}
 		},
 		loginUser: async (_, { username, password }) => {
+			// validate user
 			const { errors, valid } = validateLoginUser(username, password);
 			if (!valid) throw new UserInputError("Errors", { errors });
+			// check if the user exists
 			try {
 				const user = await Users.findOne({ username });
+				console.log(user);
 
 				if (!user)
-					throw new UserInputError("Error", {
-						errors: { error: "Wrong credentials" },
+					throw new UserInputError("Wrong credentials", {
+						errors: { username: "User not found" },
 					});
 				const match = await bcrypt.compare(password, user.password);
 				if (!match)
-					throw new UserInputError("Error", {
-						errors: { error: "Wrong credentials" },
+					throw new UserInputError("Wrong credentials", {
+						errors: { Password: "Wrong credentials" },
 					});
+
 				const token = generateToken(user);
 				return {
 					...user._doc,
@@ -79,7 +83,8 @@ const userResolvers = {
 					token,
 				};
 			} catch (error) {
-				console.log(error);
+				console.log(error.message);
+				throw new UserInputError("Error", { error });
 			}
 		},
 	},
