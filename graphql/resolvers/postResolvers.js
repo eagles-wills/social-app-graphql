@@ -13,6 +13,19 @@ const postResolvers = {
 				console.log(error);
 			}
 		},
+
+		fetchPost: async (_, { postId }) => {
+			try {
+				const post = await Post.findById(postId);
+				if (!post)
+					throw new UserInputError("post not found", {
+						errors: { error: "post not found" },
+					});
+				return post;
+			} catch (error) {
+				console.log(error);
+			}
+		},
 	},
 
 	Mutation: {

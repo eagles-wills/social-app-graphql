@@ -32,6 +32,7 @@ const typeDefs = gql`
 	}
 	type Query {
 		fetchAllPosts: [Post!]
+		fetchPost(postId: ID!): Post!
 	}
 
 	type Mutation {

@@ -42,7 +42,7 @@ const userResolvers = {
 				const newUser = new Users({
 					username,
 					email,
-					password,
+					password: await bcrypt.hash(password, 12),
 					createdAt: moment(new Date().toISOString()).toDate(),
 				});
 				const user = await newUser.save();
@@ -53,7 +53,8 @@ const userResolvers = {
 					token,
 				};
 			} catch (error) {
-				console.log(error.message);
+				console.log(error);
+				console.log("where is this error coming from");
 				throw new UserInputError("Error", { error });
 			}
 		},
@@ -64,7 +65,6 @@ const userResolvers = {
 			// check if the user exists
 			try {
 				const user = await Users.findOne({ username });
-				console.log(user);
 
 				if (!user)
 					throw new UserInputError("Wrong credentials", {
@@ -84,6 +84,7 @@ const userResolvers = {
 				};
 			} catch (error) {
 				console.log(error.message);
+				console.log("i am from the login");
 				throw new UserInputError("Error", { error });
 			}
 		},

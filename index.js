@@ -29,4 +29,4 @@ mongoose
 			`MongoDB: connected on ${mongoose.connection.host}`.green.bold,
 		),
 	)
-	.catch((err) => console.log(err));
+	.catch((err) => console.log(err.message));
